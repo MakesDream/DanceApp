@@ -2,6 +2,9 @@
 #include <EEPROM.h>
 
 
+
+//Define pins for FSRs and LEDs, adjust based on your board design/wiring diagram
+
 int LF = A3; //left fsr
 int UF = A2;
 int DF = A1;
@@ -11,6 +14,8 @@ int LL = 0; //left LED
 int UL = 1;
 int DL = 2;
 int RL = 3;
+
+//These are default thresholds, they don't matter too much as the board will load the thresholds from EEPROM on boot
 
 int Lt = 300; //left threshold
 int Ut = 300;
@@ -32,6 +37,8 @@ unsigned long lastWriteTime = 0;
 
 void setup() {
   // put your setup code here, to run once:
+
+  //Code to open the Serial COM port and load thresholds from EEPROM
   Serial.begin(9600, SERIAL_8N1);
 
   EEPROM.get(0, Lt);
@@ -52,6 +59,8 @@ pinMode(DF, INPUT);
 pinMode(RF, INPUT);
 
 }
+
+//function to recieve strings from DanceApp
 
 void receiveString(){
   static byte ndx = 0;
@@ -75,9 +84,10 @@ void receiveString(){
     }
   }
 }
+
+//function to loop over the recieved string and allocate the values as new threshold values
+//also supports saving new thresholds to EEPROM for retrieval when the "apply" button is pressed.
 void newThresh(){
-  //if (newData == true) {
-    //Serial.print(receivedChars);
 
     for (int i = 0; i <= sizeof(receivedChars); i++){
       if(isDigit(receivedChars[i])){
@@ -158,6 +168,14 @@ void loop() {
   int Rvalue = analogRead(RF);
   String Rout = String(Rvalue);
   //Serial.print(Rvalue);
+  if (Rvalue > Rt){
+    digitalWrite(RL, HIGH);
+    Joystick.setButton (3, 1);
+   } else {
+    digitalWrite(RL, LOW);
+    Joystick.setButton (3, 0);
+  }
+
   String Output = Lout;
   Output += "L";
   Output += Uout;
@@ -167,18 +185,13 @@ void loop() {
   Output += Rout;
   Output += "R";
 
-
+// timer for sending the string of current values to DanceApp
+// if data is sent too quickly DanceApp can't keep up
+//this doesn't affect gameplay as the joystick buttons aren't updated based on this timer
   if(millis() - lastWriteTime >= 100) {
       Serial.println(Output);
       lastWriteTime = millis();
   }
   
 
-  if (Rvalue > Rt){
-    digitalWrite(RL, HIGH);
-    Joystick.setButton (3, 1);
-   } else {
-    digitalWrite(RL, LOW);
-    Joystick.setButton (3, 0);
-  }
 }
