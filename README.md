@@ -6,6 +6,17 @@ Rather than run complicated web apps or require extra software be installed on t
 
 Included is the Excecutable itself, and an example arduino file to show how I implemented arduino compliance with DanceApp. You can use the example file as a reference or install it directly to your controller, just make sure to configure the analog inputs so they point to the right FSRs in your design. the example file DOES NOT support addressable RGB LEDs at this time, it does support small LEDs on the board to quickly indicate if the currently defined thresholds for each sensor is currently being met.
 
+# Installation
+
+Follow the instructions here: https://github.com/MHeironimus/ArduinoJoystickLibrary to download the Joystick Library required for DanceApp.
+
+Edit the FSR_Code.ino to define the sensors and wire them up to the correct FSR the defaults are:
+
+    int LF = A0; //left fsr
+    int UF = A1;
+    int DF = A2;
+    int RF = A3;
+
 # How to use DanceApp
 
 DanceApp connects to the Arduino based controller over the COM port, so the first step to using it is to manually select the COM port the Arduino controller is located at. once you select a port, it will attempt to open the port, if successful, and the arduino controller is present, it should start displaying live readings of your FSRs in the bars corresponding to each sensor.

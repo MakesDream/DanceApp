@@ -5,10 +5,10 @@
 
 //Define pins for FSRs and LEDs, adjust based on your board design/wiring diagram
 
-int LF = A3; //left fsr
-int UF = A2;
-int DF = A1;
-int RF = A0;
+int LF = A0; //left fsr
+int UF = A1;
+int DF = A2;
+int RF = A3;
 
 int LL = 0; //left LED
 int UL = 1;
@@ -88,39 +88,47 @@ void receiveString(){
 //function to loop over the recieved string and allocate the values as new threshold values
 //also supports saving new thresholds to EEPROM for retrieval when the "apply" button is pressed.
 void newThresh(){
+   static bool saveThresholds = false; // Flag to indicate whether to save to EEPROM
+  static bool saveComplete = false;   // Flag to indicate that saving is completed
 
-    for (int i = 0; i <= sizeof(receivedChars); i++){
-      if(isDigit(receivedChars[i])){
-        readingTemp += (receivedChars[i]);
-      }
-    if (isAlpha(receivedChars[i])){
-      if (receivedChars[i] == 'L')
+  for (int i = 0; i < sizeof(receivedChars); i++) {
+    char currentChar = receivedChars[i];
+
+    if (currentChar == 'S') {
+      saveThresholds = true; // Set the flag to indicate we should save to EEPROM
+    } else if (isDigit(currentChar)) {
+      readingTemp += currentChar;
+    } else if (isAlpha(currentChar)) {
+      if (currentChar == 'L')
         Lt = readingTemp.toInt();
-      else if (receivedChars[i] == 'U')
-        Ut = readingTemp.toInt();     
-      else if (receivedChars[i] == 'D')
+      else if (currentChar == 'U')
+        Ut = readingTemp.toInt();
+      else if (currentChar == 'D')
         Dt = readingTemp.toInt();
-      else if (receivedChars[i] == 'R')
+      else if (currentChar == 'R')
         Rt = readingTemp.toInt();
-      else if (receivedChars[i] == 'S'){
-        Serial.println("Saving...");
-        delay(1000);
-          EEPROM.put(0, Lt);
-          EEPROM.put(2, Ut);
-          EEPROM.put(4, Dt);
-          EEPROM.put(6, Rt);
-
-          Serial.println("Saving successful!");
-          delay(1000);
-      }
-      readingTemp = "";
-      }
-    
+      readingTemp = ""; // Reset readingTemp for the next parameter
     }
-    
-    newData = false;
   }
 
+  // Check if the flag is set to true and saving is not completed yet
+  if (saveThresholds && !saveComplete) {
+    Serial.println("Saving...");
+    delay(1000);
+    EEPROM.put(0, Lt);
+    EEPROM.put(2, Ut);
+    EEPROM.put(4, Dt);
+    EEPROM.put(6, Rt);
+
+    Serial.println("Saving successful!");
+    delay(1000);
+    
+    saveThresholds = false; // Reset the flag to prevent continuous saving
+    saveComplete = true;    // Set the flag to indicate that saving is completed
+  }
+
+  newData = false;
+}
 
 void loop() {
   // put your main code here, to run repeatedly:
