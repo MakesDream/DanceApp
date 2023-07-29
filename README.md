@@ -6,6 +6,8 @@ Rather than run complicated web apps or require extra software be installed on t
 
 Included is the Excecutable itself, and an example arduino file to show how I implemented arduino compliance with DanceApp. You can use the example file as a reference or install it directly to your controller, just make sure to configure the analog inputs so they point to the right FSRs in your design. the example file DOES NOT support addressable RGB LEDs at this time, it does support small LEDs on the board to quickly indicate if the currently defined thresholds for each sensor is currently being met.
 
+![DanceApp](https://github.com/MakesDream/DanceApp/assets/46170306/91e8edd2-70dd-470a-b1b7-7dbfcf56d6ff)
+
 # Installation
 
 Follow the instructions here: https://github.com/MHeironimus/ArduinoJoystickLibrary to download the Joystick Library required for DanceApp.
@@ -27,10 +29,10 @@ once you have the values set where you want them, pressing the "OK" button will 
 
 # Limitations and Possible future upgrades
 
-At this time DanceApp only supports Windows
-At this time DanceApp only supports 4 panel Dance Controllers
-At this time DanceApp only supports 4 FSRs per controller, or 1 sensor per panel
-At this time DanceApp does not support addressable RGB LEDs
-At this time DanceApp can not automatically detect compatible controllers and has to be manually pointed to an appropriate COM port
+At this time DanceApp only supports Windows <br>
+At this time DanceApp only supports 4 panel Dance Controllers <br>
+At this time DanceApp only supports 4 FSRs per controller, or 1 sensor per panel <br>
+At this time DanceApp does not support addressable RGB LEDs <br>
+At this time DanceApp can not automatically detect compatible controllers and has to be manually pointed to an appropriate COM port <br>
 
 
